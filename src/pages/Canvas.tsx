@@ -59,6 +59,7 @@ const Canvas = ({
             <MainMenu.DefaultItems.ClearCanvas />
             <MainMenu.DefaultItems.SaveAsImage />
             <MainMenu.DefaultItems.ChangeCanvasBackground />
+            <MainMenu.DefaultItems.Export />
           </MainMenu>
           <WelcomeScreen>
             <WelcomeScreen.Hints.HelpHint />
