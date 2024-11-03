@@ -1,81 +1,75 @@
+import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw"
+import { MyDispatch, MySelector } from "../redux/store"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
-import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw"
+import { useDispatch } from "react-redux"
+import { saveFile, setCurrentFile } from "../redux/canvasSlice"
 
-const Canvas = ({
-  allFiles,
-  setAllFiles,
-  theme,
-}: {
-  allFiles: Array<{ id: string; fileName: string }> | null | undefined
-  setAllFiles: (arg: typeof allFiles) => void
-  theme: string
-}) => {
+const Canvas = ({ theme }: { theme: string }) => {
   const location = useLocation()
+  const dispatch = useDispatch<MyDispatch>()
+  const { currentFile, allFiles } = MySelector((state) => state.canvas)
 
   const [whiteboardData, setWhiteBoardData] = useState<any>(null)
-  const [file, setFile] = useState<{
-    id: string
-    fileName: string
-    canvas?: string
-  } | null>(null)
+
+  const save = () => {
+    dispatch(saveFile(whiteboardData))
+  }
 
   useEffect(() => {
-    const updateFile:
-      | Array<{
-          id: string
-          fileName: string
-          canvas?: string
-        }>
-      | undefined = allFiles?.map(
-      (af: { id: string; fileName: string; canvas?: string }) =>
-        af.id === file?.id
-          ? { ...af, canvas: JSON.stringify(whiteboardData) }
-          : af
-    )
-    setAllFiles(updateFile)
-  }, [whiteboardData])
-
-  useEffect(() => {
+    if (currentFile) return
     if (!location) return
-    const openId = location.pathname.split("/")[2]
-    const openFile = allFiles?.find((f) => f.id === openId)
-    if (openFile) setFile(openFile)
+    if (!allFiles) return
+    const fileId = location.pathname.split("/")[2]
+    dispatch(setCurrentFile({ id: fileId }))
   }, [location, allFiles])
 
   return (
     <div className="flex flex-1">
-      <div className="flex-1">
-        <Excalidraw
-          initialData={{
-            elements: file && file.canvas && JSON.parse(file?.canvas),
-          }}
-          theme={theme === "dark" ? "dark" : "light"}
-          onChange={(excalidrawElements, appState, files) =>
-            setWhiteBoardData(excalidrawElements)
-          }
-        >
-          <MainMenu>
-            <MainMenu.DefaultItems.ClearCanvas />
-            <MainMenu.DefaultItems.SaveAsImage />
-            <MainMenu.DefaultItems.ChangeCanvasBackground />
-            <MainMenu.DefaultItems.Export />
-          </MainMenu>
-          <WelcomeScreen>
-            <WelcomeScreen.Hints.HelpHint />
-            <WelcomeScreen.Hints.MenuHint />
-            <WelcomeScreen.Hints.ToolbarHint />
-            <WelcomeScreen.Center>
-              <WelcomeScreen.Center.Logo>
-                Purple Wizard Lab
-              </WelcomeScreen.Center.Logo>
-              <WelcomeScreen.Center.Heading>
-                Diagrams. Made. Simple
-              </WelcomeScreen.Center.Heading>
-            </WelcomeScreen.Center>
-          </WelcomeScreen>
-        </Excalidraw>
-      </div>
+      {currentFile && (
+        <div className="flex-1">
+          <Excalidraw
+            initialData={{
+              elements: currentFile?.canvas && currentFile?.canvas,
+              scrollToContent: true,
+            }}
+            theme={theme === "dark" ? "dark" : "light"}
+            onChange={(excalidrawElements, appState, files) =>
+              setWhiteBoardData(excalidrawElements)
+            }
+            renderTopRightUI={() => {
+              return (
+                <button
+                  className="bg-purple-600 py-1 px-6 rounded-lg text-lg text-white"
+                  onClick={save}
+                >
+                  Save
+                </button>
+              )
+            }}
+          >
+            <MainMenu>
+              <MainMenu.DefaultItems.ClearCanvas />
+              <MainMenu.DefaultItems.SaveAsImage />
+              <MainMenu.DefaultItems.ChangeCanvasBackground />
+              <MainMenu.DefaultItems.Export />
+            </MainMenu>
+            <WelcomeScreen>
+              <WelcomeScreen.Hints.HelpHint />
+              <WelcomeScreen.Hints.MenuHint />
+              <WelcomeScreen.Hints.ToolbarHint />
+              <WelcomeScreen.Center>
+                <WelcomeScreen.Center.Logo>
+                  Purple Wizard Lab
+                </WelcomeScreen.Center.Logo>
+                <WelcomeScreen.Center.Heading>
+                  Diagrams. Made. Simple
+                </WelcomeScreen.Center.Heading>
+              </WelcomeScreen.Center>
+            </WelcomeScreen>
+          </Excalidraw>
+        </div>
+      )}
     </div>
   )
 }

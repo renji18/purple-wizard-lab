@@ -1,9 +1,10 @@
 import { Box, Modal } from "@mui/material"
 import uploadIcon from "../assets/uploadIcon.svg"
-import { useEffect, useState } from "react"
-import { nanoid } from "nanoid"
-import { toast } from "sonner"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { MyDispatch, MySelector } from "../redux/store"
+import { createFile } from "../redux/canvasSlice"
+import { useState } from "react"
 
 const style = {
   position: "absolute",
@@ -20,19 +21,16 @@ const style = {
 const Navbar = ({
   theme,
   setTheme,
-  allFiles,
-  setAllFiles,
 }: {
   theme: string
   setTheme: (arg: string) => void
-  allFiles: Array<{ id: string; fileName: string }> | null | undefined
-  setAllFiles: (arg: typeof allFiles) => void
 }) => {
+  const dispatch = useDispatch<MyDispatch>()
   const navigate = useNavigate()
+  const { currentFile } = MySelector((state) => state.canvas)
   const location = useLocation()
   const [open, setOpen] = useState<boolean>(false)
   const [fileName, setFileName] = useState<string>("")
-  const [activeFileName, setActiveFileName] = useState<string>("")
 
   const tabs = [{ title: "New", func: newFile }]
 
@@ -67,47 +65,11 @@ const Navbar = ({
     setTheme(theme === "dark" ? "light" : "dark")
   }
 
-  const createFile = () => {
-    const existingFiles = sessionStorage.getItem(
-      process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || ""
-    )
-    const newFile = { id: nanoid(), fileName }
-
-    if (existingFiles) {
-      sessionStorage.setItem(
-        process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
-        JSON.stringify([...JSON.parse(existingFiles), newFile])
-      )
-    } else {
-      sessionStorage.setItem(
-        process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
-        JSON.stringify([newFile])
-      )
-    }
-
-    setAllFiles(Array.isArray(allFiles) ? [...allFiles, newFile] : [newFile])
+  const createNewFile = () => {
+    dispatch(createFile({ fileName, navigate }))
     setOpen(false)
     setFileName("")
-    navigate(`/canvas/${newFile.id}`)
-    toast.success("File Created Successfully")
   }
-
-  const saveCanvas = () => {
-    if (!location.pathname.startsWith("/canvas")) return
-    sessionStorage.setItem(
-      process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
-      JSON.stringify(allFiles)
-    )
-
-    toast.success("Canvas Saved Successfully!")
-  }
-
-  useEffect(() => {
-    if (!location) return
-    const openId = location.pathname.split("/")[2]
-    const openFile = allFiles?.find((f) => f.id === openId)
-    if (openFile) setActiveFileName(openFile.fileName)
-  }, [location, allFiles])
 
   return (
     <div className="bg-themeLightWhite dark:bg-themeLightBlack py-2.5 px-11 flex justify-between items-center sticky top-0 border-b border-b-themeDarkWhite dark:border-b-themeLightBlack">
@@ -118,7 +80,7 @@ const Navbar = ({
         >
           Purplewizard Lab
         </p>
-        {!location.pathname.startsWith("/canvas") && (
+        {!location.pathname.startsWith("/lab") && (
           <div className="flex gap-10 justify-center items-center text-lg">
             {tabs?.map((t) => (
               <span
@@ -134,7 +96,7 @@ const Navbar = ({
       </div>
 
       <p className="cursor-pointer text-themeLightBlack dark:text-themeLightWhite text-2xl italic font-bold tracking-wider">
-        {activeFileName}
+        {currentFile?.fileName}
       </p>
 
       <div className="flex gap-10 justify-center items-center">
@@ -157,9 +119,7 @@ const Navbar = ({
             alt="upload icon"
             className="h-[20px] w-[20px]"
           />
-          <span onClick={saveCanvas} className="text-white text-xl">
-            {location.pathname.startsWith("/canvas") ? "Save" : "Deploy"}
-          </span>
+          <span className="text-white text-xl">Deploy</span>
         </button>
       </div>
 
@@ -182,9 +142,10 @@ const Navbar = ({
             placeholder="Enter File Name"
             className="mt-5 mb-3 w-full rounded-lg border-2 border-purple-200 focus:border-purple-500 outline-none px-4 py-2"
             value={fileName}
+            autoFocus
             onChange={(e) => setFileName(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") createFile()
+              if (e.key === "Enter") createNewFile()
             }}
           />
           <button
