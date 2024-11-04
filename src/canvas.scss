@@ -1,0 +1,29 @@
+#canvas-wrapper {
+  .App-toolbar__divider {
+    display: none;
+  }
+  button[title="More tools"] {
+    display: none;
+  }
+  label[title="Insert image — 9"] {
+    display: none;
+  }
+  label[title="Keep selected tool active after drawing — Q"] {
+    display: none;
+  }
+  label[title="Text — T or 8"] {
+    display: none;
+  }
+  label[title="Draw — P or 7"] {
+    display: none;
+  }
+  label[title="Library"] {
+    display: none;
+  }
+  label.MuiInputLabel-outlined {
+    color: #9333ea;
+  }
+  .MuiFormControl-root svg {
+    color: #9333ea;
+  }
+}

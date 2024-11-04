@@ -72,7 +72,7 @@ const Navbar = ({
   }
 
   return (
-    <div className="bg-themeLightWhite dark:bg-themeLightBlack py-2.5 px-11 flex justify-between items-center sticky top-0 border-b border-b-themeDarkWhite dark:border-b-themeLightBlack">
+    <div className="bg-themeLightWhite dark:bg-themeLightBlack py-2.5 px-4 flex justify-between items-center sticky top-0 border-b border-b-themeDarkWhite dark:border-b-themeLightBlack">
       <div className="flex gap-12 justify-center items-center">
         <p
           onClick={() => navigate("/")}

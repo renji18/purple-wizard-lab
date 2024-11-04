@@ -10,8 +10,18 @@ const saveToStorage = (files: any) => {
 }
 
 const initialState: {
-  allFiles: Array<{ id: string; fileName: string; canvas?: any }> | null
-  currentFile: { id: string; fileName: string; canvas?: any } | null
+  allFiles: Array<{
+    id: string
+    fileName: string
+    canvas?: any
+    server?: string
+  }> | null
+  currentFile: {
+    id: string
+    fileName: string
+    canvas?: any
+    server?: string
+  } | null
   loading: boolean
   error: any
   status: string
@@ -66,9 +76,25 @@ const canvasSlice = createSlice({
       saveToStorage(state.allFiles)
       toast.success("Canvas Saved Successfully")
     },
+    updateServer: (state, action) => {
+      if (state.currentFile) {
+        const file = { ...state.currentFile, server: action.payload }
+        state.currentFile = file
+
+        state.allFiles = Array.isArray(state.allFiles)
+          ? state.allFiles.map((f) => (f.id === file.id ? file : f))
+          : [file]
+      }
+      toast.success("Server Updated Successfully")
+    },
   },
 })
 
-export const { createFile, setAllFiles, saveFile, setCurrentFile } =
-  canvasSlice.actions
+export const {
+  createFile,
+  setAllFiles,
+  saveFile,
+  setCurrentFile,
+  updateServer,
+} = canvasSlice.actions
 export default canvasSlice.reducer

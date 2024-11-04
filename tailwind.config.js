@@ -8,7 +8,7 @@ module.exports = {
         themeLightBlack: "#2C2C2C",
         themeDarkBlack: "#1E1E1E",
         themeLightWhite: "#FFFFFF",
-        themeDarkWhite: "#8F8F8F",
+        themeDarkWhite: "#e5e5e5",
       },
       fontFamily: {
         prosto: ["Prosto One", "sans-serif"],
