@@ -3,23 +3,71 @@ import { MyDispatch, MySelector } from "../redux/store"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { saveFile, setCurrentFile, updateServer } from "../redux/canvasSlice"
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material"
-import openIcon from "../assets/open.svg"
-import "../canvas.scss"
+import { saveFile, setCurrentFile } from "../redux/canvasSlice"
 import { toast } from "sonner"
+import Form from "../components/canvas/Form"
+import Sidebar from "../components/canvas/Sidebar"
+import { nanoid } from "nanoid"
+import "../styles/canvas.scss"
+
+const commonConfig = {
+  angle: 0,
+  backgroundColor: "transparent",
+  fillStyle: "solid",
+  groupIds: [],
+  opacity: 100,
+  roughness: 1,
+  strokeColor: "#1e1e1e",
+  strokeStyle: "solid",
+  strokeWidth: 2,
+}
 
 const Canvas = ({ theme }: { theme: string }) => {
   const location = useLocation()
   const dispatch = useDispatch<MyDispatch>()
   const { currentFile, allFiles } = MySelector((state) => state.canvas)
 
+  const serverData: Array<{
+    name: string
+    components: Array<{
+      name: string
+      content: Array<{ name: string; shape: string }>
+    }>
+  }> = [
+    {
+      name: "AWS",
+      components: [
+        {
+          name: "Operating System",
+          content: [
+            { name: "Windows 2019", shape: "rectangle" },
+            { name: "Windows 2016", shape: "rectangle" },
+            { name: "Windows 10", shape: "rectangle" },
+            { name: "Windows 7", shape: "rectangle" },
+            { name: "Ubuntu 22.04", shape: "rectangle" },
+            { name: "Ubuntu Server 22.04", shape: "rectangle" },
+            { name: "Kali Linux", shape: "rectangle" },
+          ],
+        },
+        {
+          name: "Configurations",
+          content: [
+            { name: "Install Active Directory", shape: "ellipse" },
+            { name: "Join Domain", shape: "ellipse" },
+            { name: "Install Splunk Server", shape: "ellipse" },
+            { name: "Install Splunk Forwarder", shape: "ellipse" },
+            { name: "Install Sysmon", shape: "ellipse" },
+            { name: "Enable CommandLine Logging", shape: "ellipse" },
+            { name: "Enable Powershell Logging", shape: "ellipse" },
+            { name: "ASREPRoasting Vulnerability", shape: "ellipse" },
+            { name: "Vulnerable Share", shape: "ellipse" },
+          ],
+        },
+      ],
+    },
+  ]
+
+  const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null)
   const [whiteboardData, setWhiteBoardData] = useState<any>(null)
   const [selectedServer, setSelectedServer] = useState<string>("")
   const [open, setOpen] = useState<boolean>(false)
@@ -37,39 +85,84 @@ const Canvas = ({ theme }: { theme: string }) => {
     setOpen(false)
   }
 
-  const serverData = [
-    {
-      name: "AWS",
-      components: [
-        {
-          name: "Operating System",
-          content: [
-            { name: "Windows 2019", canvasCode: "" },
-            { name: "Windows 2016" },
-            { name: "Windows 10" },
-            { name: "Windows 7" },
-            { name: "Ubuntu 22.04" },
-            { name: "Ubuntu Server 22.04" },
-            { name: "Kali Linux" },
-          ],
-        },
-        {
-          name: "Configurations",
-          content: [
-            { name: "Install Active Directory" },
-            { name: "Join Domain" },
-            { name: "Install Splunk Server" },
-            { name: "Install Splunk Forwarder" },
-            { name: "Install Sysmon" },
-            { name: "Enable CommandLine Logging" },
-            { name: "Enable Powershell Logging" },
-            { name: "ASREPRoasting Vulnerability" },
-            { name: "Vulnerable Share" },
-          ],
-        },
-      ],
-    },
-  ]
+  function appendToWhiteBoard(type: string, text: string) {
+    const containerId = nanoid()
+    const textId = nanoid()
+
+    const newData =
+      type === "rectangle"
+        ? [
+            {
+              boundElements: [{ type: "text", id: textId }],
+              height: 74.9453125,
+              id: containerId,
+              roundness: {
+                type: 3,
+                value: 32,
+              },
+              type,
+              width: 290,
+              x: 100,
+              y: 100,
+              ...commonConfig,
+            },
+            {
+              baseline: 16,
+              containerId,
+              fontFamily: 1,
+              fontSize: 17,
+              height: 22,
+              id: textId,
+              lineHeight: 1.25,
+              originalText: text,
+              text,
+              textAlign: "center",
+              verticalAlign: "center",
+              type: "text",
+              width: 178.3199005126953,
+              x: 130,
+              y: 132,
+              ...commonConfig,
+            },
+          ]
+        : [
+            {
+              boundElements: [{ type: "text", id: textId }],
+              height: 175.49609375,
+              id: containerId,
+              roundness: {
+                type: 2,
+              },
+              type,
+              width: 188.71875,
+              x: 100,
+              y: 100,
+              ...commonConfig,
+            },
+            {
+              baseline: 36,
+              containerId,
+              fontFamily: 1,
+              fontSize: 17,
+              height: 75,
+              id: textId,
+              lineHeight: 1.25,
+              originalText: text,
+              text: text.replace(/ /g, "\n"),
+              textAlign: "center",
+              verticalAlign: "middle",
+              type: "text",
+              width: 110.48292541503906,
+              x: 130,
+              y: 132,
+              ...commonConfig,
+            },
+          ]
+
+    excalidrawAPI?.updateScene({ elements: [...whiteboardData, ...newData] })
+  }
+
+  console.log(whiteboardData, "whibo")
 
   useEffect(() => {
     if (currentFile) return
@@ -82,6 +175,7 @@ const Canvas = ({ theme }: { theme: string }) => {
   useEffect(() => {
     if (!currentFile) return
     if (currentFile.server) setSelectedServer(currentFile.server)
+    if (currentFile.canvas) excalidrawAPI?.updateScene(currentFile.canvas)
   }, [currentFile])
 
   return (
@@ -97,92 +191,30 @@ const Canvas = ({ theme }: { theme: string }) => {
             onChange={(excalidrawElements, appState, files) =>
               setWhiteBoardData(excalidrawElements)
             }
+            excalidrawAPI={(api) => setExcalidrawAPI(api)}
             renderTopRightUI={() => {
               return (
                 <>
-                  <FormControl
-                    sx={{ minWidth: 150, color: "white" }}
-                    size="small"
-                  >
-                    <InputLabel id="demo-multiple-name-label">
-                      {selectedServer === "" ? "Select Server" : "Server"}
-                    </InputLabel>
-                    <Select
-                      sx={{ color: theme === "dark" ? "white" : "black" }}
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={selectedServer}
-                      label="Age"
-                      onChange={(e: SelectChangeEvent) => {
-                        setSelectedServer(e.target.value)
-                        dispatch(updateServer(e.target.value))
-                      }}
-                    >
-                      {serverData?.map((sd) => (
-                        <MenuItem value={sd.name}>{sd?.name}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Form
+                    selectedServer={selectedServer}
+                    setSelectedServer={setSelectedServer}
+                    theme={theme}
+                    serverData={serverData}
+                  />
                   <button
-                    className="bg-purple-600 outline-none py-1 px-6 rounded-lg text-lg text-white"
+                    className="bg-purple-600 outline-none py-1 px-6 rounded-lg text-lg text-white z-[500]"
                     onClick={save}
                   >
                     Save
                   </button>
-                  <div className="absolute flex justify-center items-center right-0 h-full">
-                    <div
-                      className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] rounded-l-full border-r border-r-black dark:border-r-white flex justify-center items-center px-1.5 cursor-pointer ${
-                        open ? "" : "hidden"
-                      }`}
-                      onClick={closeSidebar}
-                    >
-                      <img
-                        src={openIcon}
-                        className="rotate-180 origin-center"
-                        alt=""
-                      />
-                    </div>
-                    <div
-                      className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] overflow-y-scroll ${
-                        open
-                          ? "rounded-none w-full px-6 py-3"
-                          : "w-10 rounded-l-full"
-                      }`}
-                    >
-                      {open ? (
-                        <div>
-                          <p className="text-center text-4xl font-semibold">
-                            Components
-                          </p>
-                          <div className="my-5">
-                            {serverData
-                              ?.find((d) => d.name === selectedServer)
-                              ?.components.map((sdc) => (
-                                <div className="mb-5">
-                                  <p className="text-xl font-medium mb-2">
-                                    {sdc?.name}
-                                  </p>
-                                  <div className="space-y-3">
-                                    {sdc?.content?.map((sdcc) => (
-                                      <p className="px-3 py-2 border border-purple-500 rounded-lg">
-                                        {sdcc?.name}
-                                      </p>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div
-                          className="h-full w-full flex justify-center items-center cursor-pointer"
-                          onClick={openSidebar}
-                        >
-                          <img src={openIcon} alt="" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <Sidebar
+                    open={open}
+                    closeSidebar={closeSidebar}
+                    serverData={serverData}
+                    selectedServer={selectedServer}
+                    openSidebar={openSidebar}
+                    appendToWhiteBoard={appendToWhiteBoard}
+                  />
                 </>
               )
             }}
