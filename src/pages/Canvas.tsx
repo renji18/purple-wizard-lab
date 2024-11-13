@@ -22,6 +22,16 @@ const commonConfig = {
   strokeWidth: 2,
 }
 
+const commonTextConfig = {
+  fontFamily: 1,
+  fontSize: 15,
+  lineHeight: 1.25,
+  textAlign: "center",
+  type: "text",
+  x: 130,
+  ...commonConfig,
+}
+
 const Canvas = ({ theme }: { theme: string }) => {
   const location = useLocation()
   const dispatch = useDispatch<MyDispatch>()
@@ -101,7 +111,7 @@ const Canvas = ({ theme }: { theme: string }) => {
                 value: 32,
               },
               type,
-              width: 290,
+              width: 230,
               x: 100,
               y: 100,
               ...commonConfig,
@@ -109,32 +119,26 @@ const Canvas = ({ theme }: { theme: string }) => {
             {
               baseline: 16,
               containerId,
-              fontFamily: 1,
-              fontSize: 17,
               height: 22,
               id: textId,
-              lineHeight: 1.25,
               originalText: text,
               text,
-              textAlign: "center",
               verticalAlign: "center",
-              type: "text",
               width: 178.3199005126953,
-              x: 130,
               y: 132,
-              ...commonConfig,
+              ...commonTextConfig,
             },
           ]
         : [
             {
               boundElements: [{ type: "text", id: textId }],
-              height: 175.49609375,
+              height: 175,
               id: containerId,
               roundness: {
                 type: 2,
               },
               type,
-              width: 188.71875,
+              width: 175,
               x: 100,
               y: 100,
               ...commonConfig,
@@ -142,27 +146,19 @@ const Canvas = ({ theme }: { theme: string }) => {
             {
               baseline: 36,
               containerId,
-              fontFamily: 1,
-              fontSize: 17,
-              height: 75,
+              height: 52,
               id: textId,
-              lineHeight: 1.25,
               originalText: text,
               text: text.replace(/ /g, "\n"),
-              textAlign: "center",
               verticalAlign: "middle",
-              type: "text",
               width: 110.48292541503906,
-              x: 130,
-              y: 132,
-              ...commonConfig,
+              y: 162,
+              ...commonTextConfig,
             },
           ]
 
     excalidrawAPI?.updateScene({ elements: [...whiteboardData, ...newData] })
   }
-
-  console.log(whiteboardData, "whibo")
 
   useEffect(() => {
     if (currentFile) return
