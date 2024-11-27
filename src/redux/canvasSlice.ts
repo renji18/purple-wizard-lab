@@ -22,12 +22,19 @@ const initialState: {
     canvas?: any
     server?: string
   } | null
+  templates: Array<{
+    id: string
+    fileName: string
+    canvas?: any
+    server?: string
+  }>
   loading: boolean
   error: any
   status: string
 } = {
   allFiles: null,
   currentFile: null,
+  templates: [],
   loading: false,
   error: null,
   status: "",
@@ -76,6 +83,7 @@ const canvasSlice = createSlice({
       saveToStorage(state.allFiles)
       toast.success("Canvas Saved Successfully")
     },
+    saveAsTemplate: (state, action) => {},
     updateServer: (state, action) => {
       if (state.currentFile) {
         const file = { ...state.currentFile, server: action.payload }
@@ -96,5 +104,6 @@ export const {
   saveFile,
   setCurrentFile,
   updateServer,
+  saveAsTemplate,
 } = canvasSlice.actions
 export default canvasSlice.reducer

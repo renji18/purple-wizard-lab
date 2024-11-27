@@ -3,12 +3,13 @@ import { MyDispatch, MySelector } from "../redux/store"
 import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { saveFile, setCurrentFile } from "../redux/canvasSlice"
+import { saveAsTemplate, saveFile, setCurrentFile } from "../redux/canvasSlice"
 import { toast } from "sonner"
 import Form from "../components/canvas/Form"
 import Sidebar from "../components/canvas/Sidebar"
 import { nanoid } from "nanoid"
 import "../styles/canvas.scss"
+import { Box, Modal } from "@mui/material"
 
 const commonConfig = {
   angle: 0,
@@ -30,6 +31,18 @@ const commonTextConfig = {
   type: "text",
   x: 130,
   ...commonConfig,
+}
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 3,
 }
 
 const Canvas = ({ theme }: { theme: string }) => {
@@ -81,9 +94,12 @@ const Canvas = ({ theme }: { theme: string }) => {
   const [whiteboardData, setWhiteBoardData] = useState<any>(null)
   const [selectedServer, setSelectedServer] = useState<string>("")
   const [open, setOpen] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   const save = () => {
-    dispatch(saveFile(whiteboardData))
+    if (Array.isArray(whiteboardData) && whiteboardData.length === 0)
+      dispatch(saveFile(whiteboardData))
+    else setOpenModal(true)
   }
 
   const openSidebar = () => {
@@ -237,6 +253,47 @@ const Canvas = ({ theme }: { theme: string }) => {
           </Excalidraw>
         </div>
       )}
+
+      <Modal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={{
+            ...style,
+            outline: "none",
+            borderRadius: "8px",
+          }}
+        >
+          <p className="text-2xl font-prosto text-center py-5">Save File</p>
+          <div className="flex gap-3 py-3">
+            <button
+              onClick={() => {
+                dispatch(saveFile(whiteboardData))
+                setOpenModal(false)
+              }}
+              className={
+                "text-white disabled:bg-purple-600/60 bg-purple-600 px-4 w-full py-2 rounded-lg"
+              }
+            >
+              Save
+            </button>
+            <button
+              onClick={() => {
+                dispatch(saveAsTemplate(whiteboardData))
+                setOpenModal(false)
+              }}
+              className={
+                "text-white disabled:bg-purple-600/60 bg-purple-600 px-4 w-full py-2 rounded-lg"
+              }
+            >
+              Save as Template
+            </button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   )
 }
