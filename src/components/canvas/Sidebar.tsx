@@ -24,7 +24,7 @@ const Sidebar = ({
   return (
     <div className="absolute flex justify-center items-center right-0 h-full">
       <div
-        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] rounded-l-full border-r border-r-black dark:border-r-white flex justify-center items-center px-1.5 cursor-pointer ${
+        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] rounded-l-2xl border-r border-r-black dark:border-r-white flex justify-center items-center px-1.5 cursor-pointer ${
           open ? "" : "hidden"
         }`}
         onClick={closeSidebar}
@@ -32,8 +32,8 @@ const Sidebar = ({
         <img src={openIcon} className="rotate-180 origin-center" alt="" />
       </div>
       <div
-        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] overflow-y-scroll ${
-          open ? "rounded-none w-full px-6 py-3" : "w-10 rounded-l-full"
+        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] overflow-y-scroll transition-all duration-100 ease-linear ${
+          open ? "w-full px-6 py-3" : "w-10 rounded-l-2xl"
         }`}
       >
         {open ? (
@@ -52,7 +52,7 @@ const Sidebar = ({
                             appendToWhiteBoard(sdcc.shape, sdcc.name)
                           }
                           key={indx2}
-                          className="px-3 py-2 border border-purple-500 rounded-lg"
+                          className="px-3 py-2 border border-purple-500 rounded-2xl"
                         >
                           {sdcc?.name}
                         </p>

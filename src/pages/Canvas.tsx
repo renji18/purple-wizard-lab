@@ -95,6 +95,8 @@ const Canvas = ({ theme }: { theme: string }) => {
   const [selectedServer, setSelectedServer] = useState<string>("")
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [templateName, setTemplateName] = useState<string>("")
+  const [templateNameError, setTemplateNameError] = useState<boolean>(false)
 
   const save = () => {
     if (Array.isArray(whiteboardData) && whiteboardData.length === 0)
@@ -268,6 +270,20 @@ const Canvas = ({ theme }: { theme: string }) => {
           }}
         >
           <p className="text-2xl font-prosto text-center py-5">Save File</p>
+
+          <input
+            type="text"
+            className="border w-full rounded-md px-2 py-1"
+            placeholder="Template Name Here..."
+            value={templateName}
+            onChange={(e) => setTemplateName(e.target.value)}
+          />
+          {templateNameError && (
+            <p className="text-sm text-red-600 font-bold">
+              Template Name Is Required
+            </p>
+          )}
+
           <div className="flex gap-3 py-3">
             <button
               onClick={() => {
@@ -282,8 +298,16 @@ const Canvas = ({ theme }: { theme: string }) => {
             </button>
             <button
               onClick={() => {
-                dispatch(saveAsTemplate(whiteboardData))
-                setOpenModal(false)
+                if (templateName) {
+                  dispatch(
+                    saveAsTemplate({
+                      template: whiteboardData,
+                      name: templateName,
+                    })
+                  )
+                  dispatch(saveFile(whiteboardData))
+                  setOpenModal(false)
+                } else setTemplateNameError(true)
               }}
               className={
                 "text-white disabled:bg-purple-600/60 bg-purple-600 px-4 w-full py-2 rounded-lg"

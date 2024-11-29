@@ -2,11 +2,17 @@ import { createSlice } from "@reduxjs/toolkit"
 import { nanoid } from "nanoid"
 import { toast } from "sonner"
 
-const saveToStorage = (files: any) => {
-  sessionStorage.setItem(
-    process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
-    JSON.stringify(files)
-  )
+const saveToStorage = (files: any, type: "file" | "template") => {
+  if (type === "file")
+    sessionStorage.setItem(
+      process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
+      JSON.stringify(files)
+    )
+  if (type === "template")
+    sessionStorage.setItem(
+      process.env.REACT_APP_TEMPLATE_DATA_PURPLE_WIZARD_LAB || "",
+      JSON.stringify(files)
+    )
 }
 
 const initialState: {
@@ -23,10 +29,14 @@ const initialState: {
     server?: string
   } | null
   templates: Array<{
+    template: {
+      id: string
+      fileName: string
+      canvas?: any
+      server?: string
+    }
+    name: string
     id: string
-    fileName: string
-    canvas?: any
-    server?: string
   }>
   loading: boolean
   error: any
@@ -54,13 +64,16 @@ const canvasSlice = createSlice({
         : [newFile]
       state.currentFile = newFile
 
-      saveToStorage(state.allFiles)
+      saveToStorage(state.allFiles, "file")
 
       toast.success("File Created Successfully")
       action.payload.navigate(`/lab/${newFile.id}`)
     },
     setAllFiles: (state, action) => {
       state.allFiles = action.payload
+    },
+    setAllTemplates: (state, action) => {
+      state.templates = action.payload
     },
     setCurrentFile: (state, action) => {
       const file = state.allFiles?.find((f) => f.id === action.payload.id)
@@ -80,10 +93,30 @@ const canvasSlice = createSlice({
           : [file]
       }
 
-      saveToStorage(state.allFiles)
+      saveToStorage(state.allFiles, "file")
       toast.success("Canvas Saved Successfully")
     },
-    saveAsTemplate: (state, action) => {},
+    saveAsTemplate: (state, action) => {
+      state.templates = Array.isArray(state.templates)
+        ? [
+            ...state.templates,
+            {
+              template: action.payload.template,
+              name: action.payload.name,
+              id: nanoid(),
+            },
+          ]
+        : [
+            {
+              template: action.payload.template,
+              name: action.payload.name,
+              id: nanoid(),
+            },
+          ]
+
+      saveToStorage(state.templates, "template")
+      toast.success("Template Saved Successfully")
+    },
     updateServer: (state, action) => {
       if (state.currentFile) {
         const file = { ...state.currentFile, server: action.payload }
@@ -105,5 +138,6 @@ export const {
   setCurrentFile,
   updateServer,
   saveAsTemplate,
+  setAllTemplates,
 } = canvasSlice.actions
 export default canvasSlice.reducer
