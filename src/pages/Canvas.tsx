@@ -1,6 +1,6 @@
 import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw"
 import { MyDispatch, MySelector } from "../redux/store"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { saveAsTemplate, saveFile, setCurrentFile } from "../redux/canvasSlice"
@@ -9,7 +9,8 @@ import Form from "../components/canvas/Form"
 import Sidebar from "../components/canvas/Sidebar"
 import { nanoid } from "nanoid"
 import "../styles/canvas.scss"
-import { Box, Modal } from "@mui/material"
+import { Box, Button, Menu, MenuItem, Modal } from "@mui/material"
+import TemplateMenu from "../components/canvas/TemplateMenu"
 
 const commonConfig = {
   angle: 0,
@@ -178,6 +179,19 @@ const Canvas = ({ theme }: { theme: string }) => {
     excalidrawAPI?.updateScene({ elements: [...whiteboardData, ...newData] })
   }
 
+  const appendTemplateToWhiteBoard = (template: any) => {
+    const newData =
+      Array.isArray(whiteboardData) && whiteboardData.length > 0
+        ? [...whiteboardData, ...template]
+        : template
+
+    excalidrawAPI?.updateScene({
+      elements: newData,
+    })
+    dispatch(saveFile(newData))
+    window.location.reload()
+  }
+
   useEffect(() => {
     if (currentFile) return
     if (!location) return
@@ -209,6 +223,10 @@ const Canvas = ({ theme }: { theme: string }) => {
             renderTopRightUI={() => {
               return (
                 <>
+                  <TemplateMenu
+                    appendTemplateToWhiteBoard={appendTemplateToWhiteBoard}
+                  />
+
                   <Form
                     selectedServer={selectedServer}
                     setSelectedServer={setSelectedServer}
@@ -307,6 +325,7 @@ const Canvas = ({ theme }: { theme: string }) => {
                   )
                   dispatch(saveFile(whiteboardData))
                   setOpenModal(false)
+                  window.location.reload()
                 } else setTemplateNameError(true)
               }}
               className={
