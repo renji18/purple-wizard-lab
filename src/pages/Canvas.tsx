@@ -1,6 +1,6 @@
 import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw"
 import { MyDispatch, MySelector } from "../redux/store"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { saveAsTemplate, saveFile, setCurrentFile } from "../redux/canvasSlice"
@@ -9,8 +9,9 @@ import Form from "../components/canvas/Form"
 import Sidebar from "../components/canvas/Sidebar"
 import { nanoid } from "nanoid"
 import "../styles/canvas.scss"
-import { Box, Button, Menu, MenuItem, Modal } from "@mui/material"
+import { Box, Modal } from "@mui/material"
 import TemplateMenu from "../components/canvas/TemplateMenu"
+import SaveMenu from "../components/canvas/SaveMenu"
 
 const commonConfig = {
   angle: 0,
@@ -39,7 +40,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 500,
+  width: 400,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -98,12 +99,6 @@ const Canvas = ({ theme }: { theme: string }) => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [templateName, setTemplateName] = useState<string>("")
   const [templateNameError, setTemplateNameError] = useState<boolean>(false)
-
-  const save = () => {
-    if (Array.isArray(whiteboardData) && whiteboardData.length === 0)
-      dispatch(saveFile(whiteboardData))
-    else setOpenModal(true)
-  }
 
   const openSidebar = () => {
     if (selectedServer === "") return toast.info("Select a Server First")
@@ -252,12 +247,12 @@ const Canvas = ({ theme }: { theme: string }) => {
                     theme={theme}
                     serverData={serverData}
                   />
-                  <button
-                    className="bg-purple-600 outline-none py-1 px-6 rounded-lg text-lg text-white z-[500]"
-                    onClick={save}
-                  >
-                    Save
-                  </button>
+
+                  <SaveMenu
+                    whiteboardData={whiteboardData}
+                    setOpenModal={setOpenModal}
+                  />
+
                   <Sidebar
                     open={open}
                     closeSidebar={closeSidebar}
@@ -306,7 +301,7 @@ const Canvas = ({ theme }: { theme: string }) => {
             borderRadius: "8px",
           }}
         >
-          <p className="text-2xl font-prosto text-center py-5">Save File</p>
+          <p className="text-2xl font-prosto text-center py-5">Save Template</p>
 
           <input
             type="text"
@@ -321,39 +316,26 @@ const Canvas = ({ theme }: { theme: string }) => {
             </p>
           )}
 
-          <div className="flex gap-3 py-3">
-            <button
-              onClick={() => {
+          <button
+            onClick={() => {
+              if (templateName) {
+                dispatch(
+                  saveAsTemplate({
+                    template: whiteboardData,
+                    name: templateName,
+                  })
+                )
                 dispatch(saveFile(whiteboardData))
                 setOpenModal(false)
-              }}
-              className={
-                "text-white disabled:bg-purple-600/60 bg-purple-600 px-4 w-full py-2 rounded-lg"
-              }
-            >
-              Save
-            </button>
-            <button
-              onClick={() => {
-                if (templateName) {
-                  dispatch(
-                    saveAsTemplate({
-                      template: whiteboardData,
-                      name: templateName,
-                    })
-                  )
-                  dispatch(saveFile(whiteboardData))
-                  setOpenModal(false)
-                  window.location.reload()
-                } else setTemplateNameError(true)
-              }}
-              className={
-                "text-white disabled:bg-purple-600/60 bg-purple-600 px-4 w-full py-2 rounded-lg"
-              }
-            >
-              Save as Template
-            </button>
-          </div>
+                window.location.reload()
+              } else setTemplateNameError(true)
+            }}
+            className={
+              "text-white disabled:bg-purple-600/60 bg-purple-600 px-8 mt-3 max-w-fit float-right py-2 rounded-lg"
+            }
+          >
+            Save
+          </button>
         </Box>
       </Modal>
     </div>

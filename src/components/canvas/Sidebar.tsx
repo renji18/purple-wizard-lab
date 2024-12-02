@@ -1,4 +1,5 @@
 import openIcon from "../../assets/open.svg"
+import componentIcon from "../../assets/Chart.svg"
 
 const Sidebar = ({
   open,
@@ -24,7 +25,7 @@ const Sidebar = ({
   return (
     <div className="absolute flex justify-center items-center right-0 h-full">
       <div
-        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] rounded-l-2xl border-r border-r-black dark:border-r-white flex justify-center items-center px-1.5 cursor-pointer ${
+        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[65%] max-h-[65%] rounded-l-2xl flex justify-center items-center px-1.5 cursor-pointer ${
           open ? "" : "hidden"
         }`}
         onClick={closeSidebar}
@@ -32,30 +33,37 @@ const Sidebar = ({
         <img src={openIcon} className="rotate-180 origin-center" alt="" />
       </div>
       <div
-        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[80%] max-h-[80%] overflow-y-scroll transition-all duration-100 ease-linear ${
-          open ? "w-full px-6 py-3" : "w-10 rounded-l-2xl"
+        className={`bg-themeDarkWhite dark:bg-themeLightBlack h-[65%] max-h-[65%] overflow-y-scroll ${
+          open ? "w-full pr-3 py-5 rounded-r-2xl" : "w-10 rounded-2xl"
         }`}
       >
         {open ? (
           <div>
-            <p className="text-center text-4xl font-semibold">Components</p>
+            <p className="text-center text-2xl font-medium">Components</p>
             <div className="my-5">
               {serverData
                 ?.find((d) => d.name === selectedServer)
                 ?.components.map((sdc, indx1) => (
                   <div className="mb-5" key={indx1}>
-                    <p className="text-xl font-medium mb-2">{sdc?.name}</p>
+                    <p className="text-2xl font-semibold mb-2">{sdc?.name}</p>
                     <div className="space-y-3">
                       {sdc?.content?.map((sdcc, indx2) => (
-                        <p
+                        <div
+                          className="flex items-center border-b border-b-[#4A4A4A] last:border-none"
                           onClick={() =>
                             appendToWhiteBoard(sdcc.shape, sdcc.name)
                           }
                           key={indx2}
-                          className="px-3 py-2 border border-purple-500 rounded-2xl"
                         >
-                          {sdcc?.name}
-                        </p>
+                          {indx1 === 0 && (
+                            <img
+                              src={componentIcon}
+                              alt=""
+                              className="h-[20px] w-[20px]"
+                            />
+                          )}
+                          <p className="p-2 tracking-wide">{sdcc?.name}</p>
+                        </div>
                       ))}
                     </div>
                   </div>
