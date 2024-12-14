@@ -58,7 +58,7 @@ const Navbar = () => {
       toggleParent.classList.add("toggle-off")
     }
 
-    setTheme(theme === "dark" ? "light" : "dark")
+    dispatch(setTheme(theme === "dark" ? "light" : "dark"))
   }
 
   const createNewFile = () => {
