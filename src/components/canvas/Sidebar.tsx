@@ -15,12 +15,12 @@ const Sidebar = ({
     name: string
     components: Array<{
       name: string
-      content: Array<{ name: string; shape: string }>
+      content: Array<{ name: string; shape: string; dependsOn?: string }>
     }>
   }>
   selectedServer: string
   openSidebar: () => void
-  appendToWhiteBoard: (arg1: string, arg2: string) => void
+  appendToWhiteBoard: (arg1: string, arg2: string, arg3?: string) => void
 }) => {
   return (
     <div className="absolute flex justify-center items-center right-0 h-full">
@@ -51,7 +51,11 @@ const Sidebar = ({
                         <div
                           className="flex items-center border-b border-b-[#4A4A4A] last:border-none"
                           onClick={() =>
-                            appendToWhiteBoard(sdcc.shape, sdcc.name)
+                            appendToWhiteBoard(
+                              sdcc.shape,
+                              sdcc.name,
+                              sdcc.dependsOn
+                            )
                           }
                           key={indx2}
                         >

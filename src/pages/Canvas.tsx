@@ -22,23 +22,6 @@ const Canvas = () => {
   const [selectedServer, setSelectedServer] = useState<string>("")
   const [openModal, setOpenModal] = useState<boolean>(false)
 
-  // effect to check the dependence between join domain and active directory
-  useEffect(() => {
-    if (!Array.isArray(whiteboardData)) return
-
-    const hasJoinDomain = whiteboardData?.filter(
-      (wd) => wd?.originalText === "Join Domain"
-    )
-    if (hasJoinDomain?.length === 0) return
-
-    const hasActiveDirectory = whiteboardData?.filter(
-      (wd) => wd?.originalText === "Install Active Directory"
-    )
-    if (hasActiveDirectory?.length > 0) return
-
-    toast.info("Active Directory is required for Join Domain")
-  }, [whiteboardData])
-
   // effect to set current file
   useEffect(() => {
     if (currentFile) return

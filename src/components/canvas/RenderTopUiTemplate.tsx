@@ -68,7 +68,7 @@ const RenderTopUiTemplate = ({
     name: string
     components: Array<{
       name: string
-      content: Array<{ name: string; shape: string }>
+      content: Array<{ name: string; shape: string; dependsOn?: string }>
     }>
   }> = [
     {
@@ -90,13 +90,25 @@ const RenderTopUiTemplate = ({
           name: "Configurations",
           content: [
             { name: "Install Active Directory", shape: "ellipse" },
-            { name: "Join Domain", shape: "ellipse" },
+            {
+              name: "Join Domain",
+              shape: "ellipse",
+              dependsOn: "Install Active Directory",
+            },
             { name: "Install Splunk Server", shape: "ellipse" },
-            { name: "Install Splunk Forwarder", shape: "ellipse" },
+            {
+              name: "Install Splunk Forwarder",
+              shape: "ellipse",
+              dependsOn: "Install Splunk Server",
+            },
             { name: "Install Sysmon", shape: "ellipse" },
             { name: "Enable CommandLine Logging", shape: "ellipse" },
             { name: "Enable Powershell Logging", shape: "ellipse" },
-            { name: "ASREPRoasting Vulnerability", shape: "ellipse" },
+            {
+              name: "ASREPRoasting Vulnerability",
+              shape: "ellipse",
+              dependsOn: "Install Active Directory",
+            },
             { name: "Vulnerable Share", shape: "ellipse" },
           ],
         },
@@ -114,7 +126,16 @@ const RenderTopUiTemplate = ({
     setOpen(false)
   }
 
-  function appendToWhiteBoard(type: string, text: string) {
+  function appendToWhiteBoard(type: string, text: string, dependsOn?: string) {
+    if (dependsOn) {
+      const hasDependent = whiteboardData?.filter(
+        (wd: { originalText: string }) => wd?.originalText === dependsOn
+      )
+
+      if (hasDependent?.length === 0)
+        return toast.info(`${text} depends on ${dependsOn}`)
+    }
+
     const containerId = nanoid()
     const textId = nanoid()
 
