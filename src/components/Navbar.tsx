@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux"
 import { MyDispatch, MySelector } from "../redux/store"
 import { createFile } from "../redux/canvasSlice"
 import { useState } from "react"
+import { setTheme } from "../redux/themeSlice"
 
 const style = {
   position: "absolute",
@@ -18,16 +19,11 @@ const style = {
   p: 4,
 }
 
-const Navbar = ({
-  theme,
-  setTheme,
-}: {
-  theme: string
-  setTheme: (arg: string) => void
-}) => {
+const Navbar = () => {
   const dispatch = useDispatch<MyDispatch>()
   const navigate = useNavigate()
   const { currentFile } = MySelector((state) => state.canvas)
+  const { theme } = MySelector((state) => state.theme)
   const location = useLocation()
   const [open, setOpen] = useState<boolean>(false)
   const [fileName, setFileName] = useState<string>("")

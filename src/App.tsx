@@ -1,16 +1,17 @@
 import { Route, Routes } from "react-router-dom"
 import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { Toaster } from "sonner"
 import Canvas from "./pages/Canvas"
 import { useDispatch } from "react-redux"
-import { MyDispatch } from "./redux/store"
+import { MyDispatch, MySelector } from "./redux/store"
 import { setAllFiles, setAllTemplates } from "./redux/canvasSlice"
 
 const App = () => {
   const dispatch = useDispatch<MyDispatch>()
-  const [theme, setTheme] = useState("dark")
+
+  const { theme } = MySelector((state) => state.theme)
 
   useEffect(() => {
     if (theme === "dark") document.documentElement.classList.add("dark")
@@ -31,10 +32,10 @@ const App = () => {
   return (
     <>
       <div className="hidden min-h-screen bg-themeDarkWhite dark:bg-themeDarkBlack lg:flex flex-col">
-        <Navbar theme={theme} setTheme={setTheme} />
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/lab/:id" element={<Canvas theme={theme} />} />
+          <Route path="/lab/:id" element={<Canvas />} />
         </Routes>
         <Toaster richColors />
       </div>

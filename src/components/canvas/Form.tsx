@@ -1,5 +1,5 @@
 import { updateServer } from "../../redux/canvasSlice"
-import { MyDispatch } from "@/src/redux/store"
+import { MyDispatch, MySelector } from "../../redux/store"
 import {
   FormControl,
   InputLabel,
@@ -12,12 +12,10 @@ import { useDispatch } from "react-redux"
 const Form = ({
   selectedServer,
   setSelectedServer,
-  theme,
   serverData,
 }: {
   selectedServer: string
   setSelectedServer: (arg: string) => void
-  theme: string
   serverData: Array<{
     name: string
     components: Array<{
@@ -27,6 +25,8 @@ const Form = ({
   }>
 }) => {
   const dispatch = useDispatch<MyDispatch>()
+  const { theme } = MySelector((state) => state.theme)
+
   return (
     <FormControl sx={{ minWidth: 150, color: "white" }} size="small">
       <InputLabel id="demo-multiple-name-label">

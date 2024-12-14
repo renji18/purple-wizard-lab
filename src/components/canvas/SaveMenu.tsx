@@ -24,8 +24,10 @@ const SaveMenu = ({
         aria-haspopup="true"
         aria-expanded={anchorOpen ? "true" : undefined}
         onClick={(e) => {
-          if (Array.isArray(whiteboardData) && whiteboardData.length === 0)
+          if (Array.isArray(whiteboardData) && whiteboardData.length === 0) {
             dispatch(saveFile(whiteboardData))
+            return
+          }
           setOpenMenu(e.currentTarget)
         }}
         sx={{
@@ -37,6 +39,7 @@ const SaveMenu = ({
           lineHeight: "1.75rem",
           color: "white",
           zIndex: 500,
+          fontWeight: 400,
         }}
       >
         Save

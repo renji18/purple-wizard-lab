@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useSelector } from "react-redux"
-import canvasSlice from './canvasSlice'
+import canvasSlice from "./canvasSlice"
+import themeSlice from "./themeSlice"
 
 export const store = configureStore({
   reducer: {
-    canvas: canvasSlice
+    canvas: canvasSlice,
+    theme: themeSlice,
   },
 })
 
