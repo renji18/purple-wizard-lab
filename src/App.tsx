@@ -40,7 +40,7 @@ const App = () => {
         <Toaster richColors />
       </div>
       <div className="flex lg:hidden justify-center items-center h-screen w-screen bg-themeDarkWhite dark:bg-themeDarkBlack text-themeLightBlack dark:text-themeLightWhite">
-        Please use a desktop to use the site.
+        Please use a desktop for this site.
       </div>
     </>
   )

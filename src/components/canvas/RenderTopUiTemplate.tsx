@@ -72,7 +72,7 @@ const RenderTopUiTemplate = ({
     }>
   }> = [
     {
-      name: "AWS",
+      name: "Proxmox",
       components: [
         {
           name: "Operating System",

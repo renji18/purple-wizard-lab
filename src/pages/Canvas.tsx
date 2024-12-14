@@ -38,6 +38,41 @@ const Canvas = () => {
     if (currentFile.canvas) excalidrawAPI?.updateScene(currentFile.canvas)
   }, [currentFile])
 
+  // changing the UI of canvas top bar Dynamically
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const parent = document.querySelector(".App-menu")
+      if (!parent) return
+
+      const left = parent.querySelector(".App-menu_top__left")
+      const center = parent.querySelector(".shapes-section")
+      const right = parent.querySelector(".layer-ui__wrapper__top-right")
+
+      if (left && center && right) {
+        const newDivLeftHidden = document.createElement("div")
+        newDivLeftHidden.className = "h-10 w-10 bg-transparent invisible"
+
+        parent.insertBefore(newDivLeftHidden, left)
+
+        const newDivCenterParent = document.createElement("div")
+        newDivCenterParent.className = "flex justify-center"
+
+        newDivCenterParent.appendChild(left)
+        newDivCenterParent.appendChild(center)
+
+        parent.insertBefore(newDivCenterParent, right)
+      }
+      observer.disconnect()
+    })
+
+    const target = document.querySelector("#root")
+    if (target) {
+      observer.observe(target, { childList: true, subtree: true })
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="flex flex-1">
       {currentFile && (
