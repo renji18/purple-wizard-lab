@@ -37,7 +37,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/lab/:id" element={<Canvas />} />
         </Routes>
-        <Toaster richColors />
+        <Toaster richColors expand={true} />
       </div>
       <div className="flex lg:hidden justify-center items-center h-screen w-screen bg-themeDarkWhite dark:bg-themeDarkBlack text-themeLightBlack dark:text-themeLightWhite">
         Please use a desktop for this site.

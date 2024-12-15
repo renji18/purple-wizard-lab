@@ -1,3 +1,4 @@
+import serverData from "../../common/serverData"
 import { updateServer } from "../../redux/canvasSlice"
 import { MyDispatch, MySelector } from "../../redux/store"
 import {
@@ -12,17 +13,9 @@ import { useDispatch } from "react-redux"
 const Form = ({
   selectedServer,
   setSelectedServer,
-  serverData,
 }: {
   selectedServer: string
   setSelectedServer: (arg: string) => void
-  serverData: Array<{
-    name: string
-    components: Array<{
-      name: string
-      content: Array<{ name: string; shape: string }>
-    }>
-  }>
 }) => {
   const dispatch = useDispatch<MyDispatch>()
   const { theme } = MySelector((state) => state.theme)

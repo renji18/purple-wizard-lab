@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { nanoid } from "nanoid"
 import { toast } from "sonner"
+import createJsonObject from "../common/jsonTemplate"
 
 const saveToStorage = (files: any, type: "file" | "template") => {
   if (type === "file")
@@ -128,6 +129,28 @@ const canvasSlice = createSlice({
       }
       toast.success("Server Updated Successfully")
     },
+    exportAsJson: (state) => {
+      toast.info(
+        "Exporter downloads the last saved version of the file. Make sure any latest changes are saved properly."
+      )
+      if (state.currentFile) {
+        const jsonObject = createJsonObject(state.currentFile)
+
+        if (!jsonObject) return
+
+        const blob = new Blob([jsonObject], {
+          type: "application/json",
+        })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = state.currentFile?.fileName + ".json"
+        a.click()
+        window.URL.revokeObjectURL(url)
+      } else {
+        toast.error("No File Found")
+      }
+    },
   },
 })
 
@@ -139,5 +162,6 @@ export const {
   updateServer,
   saveAsTemplate,
   setAllTemplates,
+  exportAsJson,
 } = canvasSlice.actions
 export default canvasSlice.reducer

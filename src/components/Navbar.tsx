@@ -3,7 +3,7 @@ import uploadIcon from "../assets/uploadIcon.svg"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { MyDispatch, MySelector } from "../redux/store"
-import { createFile } from "../redux/canvasSlice"
+import { createFile, exportAsJson } from "../redux/canvasSlice"
 import { useState } from "react"
 import { setTheme } from "../redux/themeSlice"
 
@@ -28,7 +28,7 @@ const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [fileName, setFileName] = useState<string>("")
 
-  const tabs = [{ title: "New", func: newFile }]
+  const tabs = [{ title: "New Lab", func: newFile }]
 
   function newFile() {
     setOpen(true)
@@ -68,7 +68,11 @@ const Navbar = () => {
   }
 
   return (
-    <div className="bg-themeLightWhite dark:bg-themeLightBlack py-2.5 px-4 flex justify-between items-center sticky top-0 border-b border-b-themeDarkWhite dark:border-b-themeLightBlack">
+    <div
+      className={`bg-themeLightWhite dark:bg-themeLightBlack px-4 flex justify-between items-center sticky top-0 border-b border-b-themeDarkWhite dark:border-b-themeLightBlack ${
+        location.pathname.startsWith("/lab") ? "py-2.5" : "py-4"
+      }`}
+    >
       <div className="flex gap-12 justify-center items-center">
         <p
           onClick={() => navigate("/")}
@@ -91,9 +95,11 @@ const Navbar = () => {
         )}
       </div>
 
-      <p className="cursor-pointer text-themeLightBlack dark:text-themeLightWhite text-2xl italic font-bold tracking-wider">
-        {currentFile?.fileName}
-      </p>
+      {location.pathname.startsWith("/lab") && (
+        <p className="cursor-pointer text-themeLightBlack dark:text-themeLightWhite text-2xl italic font-bold tracking-wider">
+          {currentFile?.fileName}
+        </p>
+      )}
 
       <div className="flex gap-10 justify-center items-center">
         <div
@@ -109,14 +115,19 @@ const Navbar = () => {
           />
         </div>
 
-        <button className="flex gap-2.5 items-center justify-center bg-purple-600 py-2 px-4 rounded-xl">
-          <img
-            src={uploadIcon}
-            alt="upload icon"
-            className="h-[20px] w-[20px]"
-          />
-          <span className="text-white text-xl">Deploy</span>
-        </button>
+        {location.pathname.startsWith("/lab") && (
+          <button
+            onClick={() => dispatch(exportAsJson())}
+            className="flex gap-2.5 items-center justify-center bg-purple-600 py-2 px-4 rounded-xl"
+          >
+            <img
+              src={uploadIcon}
+              alt="upload icon"
+              className="h-[20px] w-[20px]"
+            />
+            <span className="text-white text-xl">Deploy</span>
+          </button>
+        )}
       </div>
 
       <Modal

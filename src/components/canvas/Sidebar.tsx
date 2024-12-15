@@ -1,23 +1,16 @@
 import openIcon from "../../assets/open.svg"
 import componentIcon from "../../assets/Chart.svg"
+import serverData from "../../common/serverData"
 
 const Sidebar = ({
   open,
   closeSidebar,
-  serverData,
   selectedServer,
   openSidebar,
   appendToWhiteBoard,
 }: {
   open: boolean
   closeSidebar: () => void
-  serverData: Array<{
-    name: string
-    components: Array<{
-      name: string
-      content: Array<{ name: string; shape: string; dependsOn?: string }>
-    }>
-  }>
   selectedServer: string
   openSidebar: () => void
   appendToWhiteBoard: (arg1: string, arg2: string, arg3?: string) => void
