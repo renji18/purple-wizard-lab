@@ -11,8 +11,8 @@ const serverData: Array<{
       {
         name: "Operating System",
         content: [
-          { name: "Windows 2019", shape: "rectangle" },
-          { name: "Windows 2016", shape: "rectangle" },
+          { name: "Windows Server 2019", shape: "rectangle" },
+          { name: "Windows Server 2016", shape: "rectangle" },
           { name: "Windows 10", shape: "rectangle" },
           { name: "Windows 7", shape: "rectangle" },
           { name: "Ubuntu 22.04", shape: "rectangle" },
@@ -29,7 +29,7 @@ const serverData: Array<{
             shape: "ellipse",
             dependsOn: "Install Active Directory",
           },
-          { name: "Install Splunk Server", shape: "ellipse" },
+          { name: "Install Splunk", shape: "ellipse" },
           {
             name: "Install Splunk Forwarder",
             shape: "ellipse",
@@ -39,11 +39,11 @@ const serverData: Array<{
           { name: "Enable CommandLine Logging", shape: "ellipse" },
           { name: "Enable Powershell Logging", shape: "ellipse" },
           {
-            name: "ASREPRoasting Vulnerability",
+            name: "ASREPRoasting",
             shape: "ellipse",
             dependsOn: "Install Active Directory",
           },
-          { name: "Vulnerable Share", shape: "ellipse" },
+          { name: "Vulnerable Jenkins Server", shape: "ellipse" },
         ],
       },
     ],
