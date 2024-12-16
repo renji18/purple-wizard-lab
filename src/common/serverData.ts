@@ -16,7 +16,6 @@ const serverData: Array<{
           { name: "Windows 10", shape: "rectangle" },
           { name: "Windows 7", shape: "rectangle" },
           { name: "Ubuntu 22.04", shape: "rectangle" },
-          { name: "Ubuntu Server 22.04", shape: "rectangle" },
           { name: "Kali Linux", shape: "rectangle" },
         ],
       },
