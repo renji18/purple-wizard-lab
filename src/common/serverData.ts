@@ -32,7 +32,7 @@ const serverData: Array<{
           {
             name: "Install Splunk Forwarder",
             shape: "ellipse",
-            dependsOn: "Install Splunk Server",
+            dependsOn: "Install Splunk",
           },
           { name: "Install Sysmon", shape: "ellipse" },
           { name: "Enable CommandLine Logging", shape: "ellipse" },
