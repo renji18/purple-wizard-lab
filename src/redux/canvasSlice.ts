@@ -97,6 +97,14 @@ const canvasSlice = createSlice({
       saveToStorage(state.allFiles, "file")
       toast.success("Canvas Saved Successfully")
     },
+    deleteFile: (state, action) => {
+      if (Array.isArray(state.allFiles)) {
+        state.allFiles = state.allFiles.filter((f) => f.id !== action.payload)
+
+        saveToStorage(state.allFiles, "file")
+        toast.success("Canvas Deleted Successfully")
+      }
+    },
     saveAsTemplate: (state, action) => {
       state.templates = Array.isArray(state.templates)
         ? [
@@ -158,6 +166,7 @@ export const {
   createFile,
   setAllFiles,
   saveFile,
+  deleteFile,
   setCurrentFile,
   updateServer,
   saveAsTemplate,
