@@ -19,10 +19,10 @@ const App = () => {
   }, [theme])
 
   useEffect(() => {
-    const savedFiles = sessionStorage.getItem(
+    const savedFiles = localStorage.getItem(
       process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || ""
     )
-    const savedTemplates = sessionStorage.getItem(
+    const savedTemplates = localStorage.getItem(
       process.env.REACT_APP_TEMPLATE_DATA_PURPLE_WIZARD_LAB || ""
     )
     if (savedFiles) dispatch(setAllFiles(JSON.parse(savedFiles)))

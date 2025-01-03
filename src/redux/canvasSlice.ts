@@ -5,12 +5,12 @@ import createJsonObject from "../common/jsonTemplate"
 
 const saveToStorage = (files: any, type: "file" | "template") => {
   if (type === "file")
-    sessionStorage.setItem(
+    localStorage.setItem(
       process.env.REACT_APP_FILE_DATA_PURPLE_WIZARD_LAB || "",
       JSON.stringify(files)
     )
   if (type === "template")
-    sessionStorage.setItem(
+    localStorage.setItem(
       process.env.REACT_APP_TEMPLATE_DATA_PURPLE_WIZARD_LAB || "",
       JSON.stringify(files)
     )
